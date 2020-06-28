@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/authenticate/forgot_password").permitAll()
 	//	.antMatchers("/authenticate/register-device").permitAll()
 		.antMatchers("/admin/**").permitAll()
-		//.antMatchers("/category/**").permitAll()
+		.antMatchers("/category/**").permitAll()
 		.anyRequest()
 		.authenticated()
 		.and()
