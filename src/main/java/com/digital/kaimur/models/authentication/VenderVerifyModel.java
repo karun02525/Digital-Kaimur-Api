@@ -19,12 +19,12 @@ public class VenderVerifyModel {
     
 
     @Id
-    private String vender_id;
+    private String vid;
     private String uid;
     private String name;
     private String mobile;
-    private String category_id;
-    private String category_name;
+    private String email;
+    private String cid;
     private int is_verify;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")

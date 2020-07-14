@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//	.antMatchers("/authenticate/register-device").permitAll()
 		.antMatchers("/admin/**").permitAll()
 		.antMatchers("/category/**").permitAll()
+		.antMatchers("/authenticate/image-profile/**").permitAll()
 		.anyRequest()
 		.authenticated()
 		.and()

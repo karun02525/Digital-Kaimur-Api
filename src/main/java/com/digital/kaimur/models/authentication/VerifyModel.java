@@ -20,11 +20,9 @@ public class VerifyModel {
 	  
 	@NotNull(message = "Vender id cannot be empty")
     @Size(min = 10, max = 50, message = "Vender id must be valid")
-    private String vender_id;
+    private String vid;
 	
 	
 	@NotNull(message = "Verify code cannot be empty")
-    @Size(min = 1, max = 1, message = "Verify code must be valid")
-    @Pattern(regexp = "(^$|[0-3])", message = "Please enter valid Verify code.")
-    private String is_verify;
+    private Integer is_verify=0;
 }

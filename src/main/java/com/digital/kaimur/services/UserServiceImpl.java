@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
 
 	 
 	 @Override
-		public ResponseEntity<?> venderVerify() {
+		public ResponseEntity<?> vendorVerify() {
 			String uid = SecurityContextHolder.getContext().getAuthentication().getName();
 			User model = mongoTemplate.findOne(new Query(Criteria.where("uid").is(uid.trim())), User.class);
 		        if (model == null) {
@@ -273,30 +273,39 @@ public class UserServiceImpl implements UserService {
 	 
 	@Transactional 
 	@Override
-	public ResponseEntity<?> venderRegister(String category_id,String category_name) {
+	public ResponseEntity<?> vendorRegister(String cid) {
 		String uid = SecurityContextHolder.getContext().getAuthentication().getName();
 		User model = mongoTemplate.findOne(new Query(Criteria.where("uid").is(uid.trim())), User.class);
 	        if (model == null) {
 	            return new ResponseEntity<>(new ResponseModel(false, "User id invalid! please try again"), HttpStatus.BAD_REQUEST);
 	        } else {
+	        	
+	        	VenderVerifyModel vmodel = mongoTemplate.findOne(new Query(Criteria.where("mobile").is(model.getMobile())), VenderVerifyModel.class);
+	   
+	        	if(vmodel!=null) {
+	        		return new ResponseEntity<>(new ResponseModel(false, "Your store already registered"), HttpStatus.BAD_REQUEST);
+	        	}else {
+	        	
 	        	VenderVerifyModel verify=new VenderVerifyModel();
 	        	verify.setUid(uid);
 	        	verify.setName(model.getName());
 	        	verify.setMobile(model.getMobile());
-	        	verify.setCategory_id(category_id.trim());
-	        	verify.setCategory_name(category_name);
+	        	verify.setEmail(model.getEmail());
+	        	verify.setCid(cid.trim());
+	      
 	        	verify.setIs_verify(1);//Pending verification (1) means
 	        	mongoTemplate.save(verify);  
 	        		
 	        	NotificationModel noti=new NotificationModel();
 	        	noti.setUid(uid);
-	        	noti.setVender_id(verify.getVender_id());
-	        	noti.setCategory(category_name);
+	        	noti.setVid(verify.getVid());
+	        	noti.setCategory("");
 	        	noti.setTitle("Pending");
 	        	noti.setType("Vender Register for Shop");
 	        	noti.setMessage("Your verification pending.");
 	        	mongoTemplate.save(noti);
                 return new ResponseEntity<>(new ResponseObjectModel(true, "Your verification pending", verify), HttpStatus.OK);
+	        }
 	        }
 	}
 

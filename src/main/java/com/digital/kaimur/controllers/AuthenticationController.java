@@ -89,15 +89,15 @@ public class AuthenticationController {
     }
     
     
-    @GetMapping("/vender_verify")
+    @GetMapping("/vendor_verify")
     public ResponseEntity<?> venderVerify() {
-        return userService.venderVerify();
+        return userService.vendorVerify();
     }
 
     
-    @GetMapping("/vender_register/{category_id}/{category_name}")
-    public ResponseEntity<?> venderSubmitVerify(@PathVariable("category_id") String category_id,@PathVariable("category_name")String category_name) {
-        return userService.venderRegister(category_id,category_name);
+    @GetMapping("/vendor_register/{cid}")
+    public ResponseEntity<?> venderSubmitVerify(@PathVariable("cid") String cid) {
+        return userService.vendorRegister(cid);
     }
     
     

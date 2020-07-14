@@ -30,9 +30,9 @@ public interface UserService {
 
     ResponseEntity<?> getPhoto(String path);
     
-    ResponseEntity<?> venderVerify();
+    ResponseEntity<?> vendorVerify();
     
-    ResponseEntity<?> venderRegister(String category_id,String category_name);
+    ResponseEntity<?> vendorRegister(String cid);
     
     ResponseEntity<?> notification();
     

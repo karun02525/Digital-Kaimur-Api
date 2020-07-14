@@ -18,7 +18,7 @@ public class NotificationModel {
     @Id
     private String notification_id;
     private String uid;
-    private String vender_id;
+    private String vid;
     private String title;
     private String message;
     private String category;

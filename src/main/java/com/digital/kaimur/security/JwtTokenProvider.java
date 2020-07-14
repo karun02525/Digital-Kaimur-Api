@@ -29,8 +29,8 @@ public class JwtTokenProvider {
   @Value("${security.jwt.token.secret-key:secret-key}")
   private String secretKey;
 
-  @Value("${security.jwt.token.expire-length:3600000}")
-  private long validityInMilliseconds = 3600000; // 1h
+  @Value("${security.jwt.token.expire-length:3600000*24*365}")
+  private long validityInMilliseconds = 3600000*24*365; // 1h
   
  // private static final Logger log= LoggerFactory.getLogger(JwtTokenProvider.class);
 

@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class StorageProperties {
 
-    private static final String BASE_FOLDER_PATH = System.getProperty("user.dir") + "\\images\\";
+    private static final String BASE_FOLDER_PATH = System.getProperty("user.dir") + "\\uploads\\";
     private static final String BASE_PATH_CATEGORY = BASE_FOLDER_PATH + "category\\";
     private static final String BASE_PATH_STORE = BASE_FOLDER_PATH + "store\\";
     private static final String BASE_PATH_PROFILE = BASE_FOLDER_PATH + "profile\\";
