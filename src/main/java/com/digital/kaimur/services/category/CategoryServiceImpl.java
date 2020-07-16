@@ -93,9 +93,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     /*Find Category by category id*/
     @Override
-    public ResponseEntity<?> findByCategory(String category_id) {
+    public ResponseEntity<?> findByCategory(String cid) {
         query = new Query();
-        query.addCriteria(Criteria.where("_id").is(category_id));
+        query.addCriteria(Criteria.where("_id").is(cid));
         Category cat = mongoTemplate.findOne(query, Category.class);
         if (cat == null)
             return new ResponseEntity<>(new ResponseArrayModel(false, "no data found"), HttpStatus.NOT_FOUND);

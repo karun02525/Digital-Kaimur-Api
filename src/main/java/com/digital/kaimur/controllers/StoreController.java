@@ -3,15 +3,13 @@ package com.digital.kaimur.controllers;
 import com.digital.kaimur.models.StoreModel;
 import com.digital.kaimur.models.common.ResponseModel;
 import com.digital.kaimur.services.store.StoreService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -24,11 +22,12 @@ public class StoreController {
     @Autowired
     private StoreService storeService;
 
-   /* @PostMapping("/register")
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
-        log.info("User register:"+user);
-        return userService.createUser(user);
-    }*/
+
+    @GetMapping("/all-store")
+    public ResponseEntity<?> findAllCategory() {
+        return storeService.findAllStore();
+    }
+
 
     @PostMapping("/create-store")
     public ResponseEntity<?> saveStore(@RequestParam("images") MultipartFile[] files,
