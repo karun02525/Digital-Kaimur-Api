@@ -1,6 +1,8 @@
 package com.digital.kaimur.services.category;
 
+import com.digital.kaimur.utils.RedisKey;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +37,11 @@ import java.util.UUID;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -42,49 +49,44 @@ public class CategoryServiceImpl implements CategoryService {
     private Query query;
 
     @Override
-    public ResponseEntity<?> categorySave(String category_name,int category_postion, MultipartFile avatar_small) {
-
-        String avatarSmallest = "category_" + UUID.randomUUID() + ".png";
-      
+    public ResponseEntity<?> categorySave(String cname, int pos, MultipartFile avatar) {
         try {
-            try (InputStream inputStream = avatar_small.getInputStream()) {
-                Files.copy(inputStream, this.categoryPath.resolve(avatarSmallest), StandardCopyOption.REPLACE_EXISTING);
-            }
-          
+            String _avatar = "category_" + UUID.randomUUID() + ".png";
             try {
-                Category cate = new Category();
-                cate.setCategory_id(RandomStringUtils.randomNumeric(5));
-                cate.setCategory_name(category_name);
-                cate.setCategory_postion(category_postion);
-                cate.setCategory_avatar(avatarSmallest);
-                mongoTemplate.save(cate);
-                return new ResponseEntity<>(new ResponseObjectModel(true, "Category created successfully", cate), HttpStatus.CREATED);
+                Files.copy(avatar.getInputStream(), this.categoryPath.resolve(_avatar));
             } catch (Exception e) {
-                throw new CustomException("Failed to save empty file");
+                throw new CustomException("Failed to save empty file" + e.getMessage());
             }
-        } catch (IOException e) {
-            throw new CustomException("Failed to store empty file");
+            Category cate = new Category();
+            cate.setCname(cname);
+            cate.setPos(pos);
+            cate.setAvatar(_avatar);
+            mongoTemplate.save(cate);
+            refreshCategoryList(true);
+            return new ResponseEntity<>(new ResponseObjectModel(true, "Category created successfully", cate), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ResponseArrayModel(false, e.getMessage(), null), HttpStatus.BAD_REQUEST);
         }
     }
 
     /* Find all category*/
     @Override
     public ResponseEntity<?> findAllCategory() {
-        List<Category> cat = mongoTemplate.findAll(Category.class);
-        if (!cat.isEmpty()) {
+        List<Category> cat = refreshCategoryList(false);
+        if (cat.isEmpty()) {
+            return new ResponseEntity<>(new ResponseModel(false, "no data available"), HttpStatus.NOT_FOUND);
+        } else {
             return new ResponseEntity<>(new ResponseArrayModel(true, "list all", cat), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponseArrayModel(false, "no data available"), HttpStatus.NOT_FOUND);
     }
-
 
     /*Get Photo by path*/
     @Override
     public ResponseEntity<?> getPhoto(String path) {
         Path imaPath = Paths.get(categoryPath + "\\" + path);
-        if(Files.exists(imaPath)){
+        if (Files.exists(imaPath)) {
             return Utils.getImageLoad(imaPath);
-        }else {
+        } else {
             return new ResponseEntity<>(new ResponseModel(false, "image path not exists"), HttpStatus.NOT_FOUND);
         }
     }
@@ -106,11 +108,11 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<?> removeCategoryAvatar(String avatar_key) {
         Path imaPath = Paths.get(categoryPath + "\\" + avatar_key);
         query = new Query();
-        Update update=null;
+        Update update = null;
         if (avatar_key.contains("category_")) {
             query.addCriteria(Criteria.where("category_avatar").is(avatar_key));
             update = new Update().set("category_avatar", "");
-        } 
+        }
 
         if (FileSystemUtils.deleteRecursively(imaPath.toFile())) {
             try {
@@ -125,16 +127,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<?> updateCategory(String category_id, String category_name,int category_postion,MultipartFile category_avatar) {
+    public ResponseEntity<?> updateCategory(String category_id, String category_name, int category_postion, MultipartFile category_avatar) {
         query = new Query();
         Query query1 = new Query();
         query1.addCriteria(Criteria.where("_id").is(category_id));
-        Category model=mongoTemplate.findOne(query1,Category.class);
+        Category model = mongoTemplate.findOne(query1, Category.class);
 
-        Path imaPath = Paths.get(categoryPath + "\\" + model.getCategory_avatar());
+        assert model != null;
+        Path imaPath = Paths.get(categoryPath + "\\" + model.getAvatar());
         FileSystemUtils.deleteRecursively(imaPath.toFile());
 
-  
 
         String avatarSmallest = "category_" + UUID.randomUUID() + ".png";
 
@@ -157,5 +159,15 @@ public class CategoryServiceImpl implements CategoryService {
         } catch (IOException e) {
             throw new CustomException("Failed to store empty file");
         }
+    }
+
+
+    private List<Category> refreshCategoryList(boolean refresh) {
+        List<Category> rl = redissonClient.getList(RedisKey.listCategory);
+        if (rl.isEmpty() || refresh) {
+            rl.clear();
+            rl.addAll(mongoTemplate.findAll(Category.class));
+        }
+        return rl;
     }
 }

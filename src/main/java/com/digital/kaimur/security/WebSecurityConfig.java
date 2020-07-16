@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/admin/**").permitAll()
 		.antMatchers("/category/**").permitAll()
 		.antMatchers("/authenticate/image-profile/**").permitAll()
+		.antMatchers("/store/**").permitAll()
 		.anyRequest()
 		.authenticated()
 		.and()

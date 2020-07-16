@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Document(collection = "vender_verify")
 public class VenderVerifyModel {
-    
 
     @Id
     private String vid;

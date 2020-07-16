@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/store")
 public class StoreController {
 
     private final Logger log = LoggerFactory.getLogger(StoreController.class);
@@ -30,10 +30,9 @@ public class StoreController {
         return userService.createUser(user);
     }*/
 
-    @PostMapping("/upload")
+    @PostMapping("/create-store")
     public ResponseEntity<?> saveStore(@RequestParam("images") MultipartFile[] files,
                                        @RequestParam("cid") String cid,
-                                       @RequestParam("cname") String cname,
                                        @RequestParam("vid") String vid,
                                        @RequestParam("sname") String sname,
                                        @RequestParam("semail") String semail,
@@ -52,8 +51,6 @@ public class StoreController {
             return new ResponseEntity<>(new ResponseModel(false, "file field is mandatory"), HttpStatus.EXPECTATION_FAILED);
         } else if (cid.equals("")) {
             return new ResponseEntity<>(new ResponseModel(false, "cid field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (cname.equals("")) {
-            return new ResponseEntity<>(new ResponseModel(false, "cname field is mandatory"), HttpStatus.BAD_REQUEST);
         }else if (vid.equals("")) {
             return new ResponseEntity<>(new ResponseModel(false, "vid field is mandatory"), HttpStatus.BAD_REQUEST);
         }else if (sname.equals("")) {
@@ -81,7 +78,7 @@ public class StoreController {
         } else if (owner_email.equals("")) {
             return new ResponseEntity<>(new ResponseModel(false, "owner email field is mandatory"), HttpStatus.BAD_REQUEST);
         } else {
-            return storeService.saveStore(files,new StoreModel(cid,cname,vid,sname,semail,smobile,color,latitude,longitude,address,nearby,pin_code,owner_name,owner_mobile,owner_email));
+            return storeService.saveStore(files,new StoreModel(cid,vid,sname,semail,smobile,color,latitude,longitude,address,nearby,pin_code,owner_name,owner_mobile,owner_email));
         }
     }
 

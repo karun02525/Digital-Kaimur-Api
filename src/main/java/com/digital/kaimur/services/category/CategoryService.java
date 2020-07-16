@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface CategoryService{
-     ResponseEntity<?> categorySave(String category_name,int category_postion, MultipartFile category_avatar);
+     ResponseEntity<?> categorySave(String cname,int pos, MultipartFile avatar);
      ResponseEntity<?> findAllCategory();
      ResponseEntity<?> findByCategory(String category_id);
      ResponseEntity<?> getPhoto(String path) throws IOException;
