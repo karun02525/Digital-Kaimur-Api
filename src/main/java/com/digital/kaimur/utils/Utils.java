@@ -8,9 +8,11 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import com.digital.kaimur.models.Category;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +20,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public class Utils {
-	
+
+
+
+	public static Category getCategory(String cid, List<Category> cat) {
+		return cat.stream()
+				.filter(x -> x.getCid().equals(cid.trim()))
+				.findFirst().orElse(null);
+	}
+
+
 	
 	 public static void ImageSave(MultipartFile imagePath, String value) {
 	        try {

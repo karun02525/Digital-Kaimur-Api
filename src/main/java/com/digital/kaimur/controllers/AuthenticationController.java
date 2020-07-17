@@ -43,7 +43,6 @@ public class AuthenticationController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
-		log.info("User register:"+user);
 		return userService.createUser(user);
 	}
 	

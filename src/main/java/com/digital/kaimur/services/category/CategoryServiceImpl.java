@@ -1,8 +1,16 @@
 package com.digital.kaimur.services.category;
 
+import com.digital.kaimur.exception.CustomException;
+import com.digital.kaimur.models.Category;
+import com.digital.kaimur.models.common.ResponseArrayModel;
+import com.digital.kaimur.models.common.ResponseModel;
+import com.digital.kaimur.models.common.ResponseObjectModel;
 import com.digital.kaimur.utils.RedisKey;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.digital.kaimur.utils.StorageProperties;
+import com.digital.kaimur.utils.Utils;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -13,14 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.digital.kaimur.exception.CustomException;
-import com.digital.kaimur.models.Category;
-import com.digital.kaimur.models.common.ResponseArrayModel;
-import com.digital.kaimur.models.common.ResponseModel;
-import com.digital.kaimur.models.common.ResponseObjectModel;
-import com.digital.kaimur.utils.StorageProperties;
-import com.digital.kaimur.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,8 @@ import java.util.UUID;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    private final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
 
     @Autowired

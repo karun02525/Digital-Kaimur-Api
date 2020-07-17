@@ -8,6 +8,7 @@ import com.digital.kaimur.models.elastic.StoreElasticModel;
 import com.digital.kaimur.utils.ElasticQueryStore;
 import com.digital.kaimur.utils.RedisKey;
 import com.digital.kaimur.utils.StorageProperties;
+import com.digital.kaimur.utils.Utils;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -61,16 +62,9 @@ public class StoreServiceImpl implements StoreService {
         StoreElasticModel s=new StoreElasticModel();
         s.setSid(sm.getSid());
 
-        //for Category
-        RMap<String, Category> map = redissonClient.getMap(RedisKey.listCategory);
-        log.info("*************Categoty**** :  : ****************"+ sm.getCid());
-        map.get(sm.getCid().trim());
-        log.info("*********************************");
-
-
-      
-       // s.setCid(sm.getCid());
-       // s.setCname(cat.getCname());
+        Category cat= Utils.getCategory(sm.getCid(),redissonClient.getList(RedisKey.listCategory));
+        s.setCid(sm.getCid());
+        s.setCname(cat.getCname());
 
         s.setVid(sm.getVid());
         s.setSname(sm.getSname());

@@ -1,34 +1,26 @@
 package com.digital.kaimur.models.authentication;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Document(collection = "user")
-@ToString
 public class User {
 
 	@ApiModelProperty(hidden = true)
 	@Id
-	private String uid;
+	private ObjectId uid;
 
 	@NotNull(message = "Name cannot be empty")
 	@Size(min = 3, message = "Name must not be less than 3 characters")
@@ -66,11 +58,13 @@ public class User {
 	
 	@ApiModelProperty(hidden = true)
 	private String pincode;
-	
-	
 
 	@ApiModelProperty(hidden = true)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date create_at = new Date();
+
+	public String getUid() {
+		return uid.toHexString();
+	}
 
 }

@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.digital.kaimur.utils.RedisKey;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +68,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
-	
+
+	@Autowired
+	private RedissonClient redissonClient;
+
+
+
 	private final Path profilePath = StorageProperties.getInstance().getProfilePath();
 
 	public ResponseEntity<?> login(AuthRequest authRequest) {
@@ -81,6 +88,7 @@ public class UserServiceImpl implements UserService {
 			try {
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userPayload.getUid(),
 						authRequest.getPassword().trim()));
+				setRedis(userPayload);
 				userPayload.setToken(jwtTokenProvider.createToken(userPayload.getUid()));
 				userPayload.setPassword(null);
 				return new ResponseEntity<>(new ResponseObjectModel(true, "Your login successfully", userPayload),
@@ -100,12 +108,11 @@ public class UserServiceImpl implements UserService {
 		checkUserMobile = mongoTemplate.findOne(new Query(Criteria.where("mobile").is(user.getMobile().trim())),
 				User.class);
 		if (checkUserMobile == null) {
-			String uid = Utils.timeStamp();
-			user.setUid(uid);
 			user.setPassword(passwordEncoder.encode(user.getPassword().trim()));
 			mongoTemplate.save(user);
+			setRedis(user);
 			user.setPassword(null);
-			user.setToken(jwtTokenProvider.createToken(uid));
+			user.setToken(jwtTokenProvider.createToken(user.getUid()));
 			return new ResponseEntity<>(new ResponseObjectModel(true, "Your registration successfully", user),
 					HttpStatus.CREATED);
 
@@ -113,6 +120,11 @@ public class UserServiceImpl implements UserService {
 			return new ResponseEntity<>(new ResponseModel(false, "Mobile is already in use"),
 					HttpStatus.UNPROCESSABLE_ENTITY);
 		}
+	}
+
+	public void setRedis(User payload){
+		RMap<String, User > map = redissonClient.getMap(RedisKey.userDetail);
+		map.fastPut(payload.getUid(), payload);
 	}
 	
 	

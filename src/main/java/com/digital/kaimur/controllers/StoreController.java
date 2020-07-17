@@ -3,7 +3,6 @@ package com.digital.kaimur.controllers;
 import com.digital.kaimur.models.StoreModel;
 import com.digital.kaimur.models.common.ResponseModel;
 import com.digital.kaimur.services.store.StoreService;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
