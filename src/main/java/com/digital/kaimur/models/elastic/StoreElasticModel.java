@@ -2,14 +2,19 @@ package com.digital.kaimur.models.elastic;
 
 import lombok.Data;
 import lombok.ToString;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
 @Data
 @ToString
 public class StoreElasticModel {
+
+    private String uid;
+    private String name;
+    private String email;
+    private String mobile;
+    private String gender;
+    private String user_avatar;
     private String sid;
     private String cid;
     private String cname;

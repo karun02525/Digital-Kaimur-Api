@@ -15,7 +15,11 @@ import com.digital.kaimur.models.authentication.User;
 public interface UserService {
 	
     ResponseEntity<?> createUser(User user);
-    
+
+    User getUserDetailRaw(String uid);
+
+    ResponseEntity<?> getUserDetail(String uid);
+
     ResponseEntity<?> registerDevice(RegisterDevice reg_device);
    
     ResponseEntity<?> login(AuthRequest user);
@@ -35,13 +39,7 @@ public interface UserService {
     ResponseEntity<?> vendorRegister(String cid);
     
     ResponseEntity<?> notification();
-    
-    
-    
-    
-    
-    
-    
+
    
     
 }

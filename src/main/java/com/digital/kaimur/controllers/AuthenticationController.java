@@ -86,7 +86,13 @@ public class AuthenticationController {
     public ResponseEntity<?> getPhoto(@PathVariable("path") String path) {
         return userService.getPhoto(path);
     }
-    
+
+    @GetMapping("/get-user/{uid}")
+    @ResponseBody
+    public ResponseEntity<?> getUserDetail(@PathVariable("uid") String uid) {
+        return userService.getUserDetail(uid);
+    }
+
     
     @GetMapping("/vendor_verify")
     public ResponseEntity<?> venderVerify() {
