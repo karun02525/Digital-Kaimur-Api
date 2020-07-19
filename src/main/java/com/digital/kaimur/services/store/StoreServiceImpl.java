@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,8 +121,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
 
-
-
-
+    /*Get Photo by path*/
+    @Override
+    public ResponseEntity<?> getPhoto(String path) {
+        Path imaPath = Paths.get(storePath + "\\" + path);
+        if (Files.exists(imaPath)) {
+            return Utils.getImageLoad(imaPath);
+        } else {
+            return new ResponseEntity<>(new ResponseModel(false, "image path not exists"), HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

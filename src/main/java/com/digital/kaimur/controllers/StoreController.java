@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/store")
 public class StoreController {
@@ -76,6 +78,10 @@ public class StoreController {
         }
     }
 
-
+    @GetMapping("/image-store/{path}")
+    @ResponseBody
+    public ResponseEntity<?> getPhoto(@PathVariable("path") String path) throws IOException {
+        return storeService.getPhoto(path);
+    }
 
 }

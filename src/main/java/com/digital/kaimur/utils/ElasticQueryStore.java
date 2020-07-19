@@ -39,7 +39,7 @@ public class ElasticQueryStore {
         try {
             Map dataMap = objectMapper.convertValue(store, Map.class);
             IndexRequest indexRequest = new IndexRequest(ElasticKey.storeIndex);
-            indexRequest.id(store.getSid());
+            indexRequest.id(store.getUid());
             indexRequest.source(dataMap);
             client.index(indexRequest, RequestOptions.DEFAULT);
         } catch (ElasticsearchException e) {

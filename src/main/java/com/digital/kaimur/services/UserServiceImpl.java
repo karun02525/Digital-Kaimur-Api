@@ -258,7 +258,7 @@ public class UserServiceImpl implements UserService {
                     Files.copy(inputStream, this.profilePath.resolve(avatarUser), StandardCopyOption.REPLACE_EXISTING);
                 }
                 Query query = new Query();
-                query.addCriteria(Criteria.where("uid").is(uid.trim()));
+                query.addCriteria(Criteria.where("_id").is(uid.trim()));
                 Update update = new Update().set("user_avatar", avatarUser);
                 mongoTemplate.upsert(query, update, User.class);
                 Map<String, String> map = new HashMap<>();
