@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.digital.kaimur.models.Category;
 import com.digital.kaimur.utils.ElasticQueryStore;
 import com.digital.kaimur.utils.RedisKey;
 import org.redisson.api.RMap;
@@ -284,11 +285,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> vendorVerify() {
         String uid = SecurityContextHolder.getContext().getAuthentication().getName();
-        User model = mongoTemplate.findOne(new Query(Criteria.where("uid").is(uid.trim())), User.class);
+        User model = mongoTemplate.findOne(new Query(Criteria.where("_id").is(uid.trim())), User.class);
         if (model == null) {
             return new ResponseEntity<>(new ResponseModel(false, "User id invalid! please try again"), HttpStatus.BAD_REQUEST);
         } else {
-
             VenderVerifyModel result = mongoTemplate.findOne(new Query(Criteria.where("uid").is(uid.trim())), VenderVerifyModel.class);
             if (result == null) {
                 Map<String, Integer> map = new HashMap<>();
@@ -313,13 +313,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> vendorRegister(String cid) {
         String uid = SecurityContextHolder.getContext().getAuthentication().getName();
-        User model = mongoTemplate.findOne(new Query(Criteria.where("uid").is(uid.trim())), User.class);
+        User model = mongoTemplate.findOne(new Query(Criteria.where("_id").is(uid.trim())), User.class);
         if (model == null) {
             return new ResponseEntity<>(new ResponseModel(false, "User id invalid! please try again"), HttpStatus.BAD_REQUEST);
         } else {
 
             VenderVerifyModel vmodel = mongoTemplate.findOne(new Query(Criteria.where("mobile").is(model.getMobile())), VenderVerifyModel.class);
-
             if (vmodel != null) {
                 return new ResponseEntity<>(new ResponseModel(false, "Your store already registered"), HttpStatus.BAD_REQUEST);
             } else {
@@ -329,7 +328,12 @@ public class UserServiceImpl implements UserService {
                 verify.setName(model.getName());
                 verify.setMobile(model.getMobile());
                 verify.setEmail(model.getEmail());
+
+                Category cat= Utils.getCategory(cid.trim(),redissonClient.getList(RedisKey.listCategory));
                 verify.setCid(cid.trim());
+                verify.setCname(cat.getCname());
+                verify.setCavatar(cat.getAvatar());
+
 
                 verify.setIs_verify(1);//Pending verification (1) means
                 mongoTemplate.save(verify);
@@ -337,7 +341,7 @@ public class UserServiceImpl implements UserService {
                 NotificationModel noti = new NotificationModel();
                 noti.setUid(uid);
                 noti.setVid(verify.getVid());
-                noti.setCategory("");
+                noti.setCategory(cat.getCname());
                 noti.setTitle("Pending");
                 noti.setType("Vender Register for Shop");
                 noti.setMessage("Your verification pending.");

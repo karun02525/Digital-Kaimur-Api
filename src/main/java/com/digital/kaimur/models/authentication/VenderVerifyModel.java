@@ -24,6 +24,8 @@ public class VenderVerifyModel {
     private String mobile;
     private String email;
     private String cid;
+    private String cname;
+    private String cavatar;
     private int is_verify;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
