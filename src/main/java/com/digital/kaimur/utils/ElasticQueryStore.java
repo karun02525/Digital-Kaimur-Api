@@ -7,8 +7,11 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -71,6 +74,29 @@ public class ElasticQueryStore {
         }
         return _doc;
     }
+
+
+    //Update Profile Image
+    public void updateProfileImageElastic(String id, String field, String value) {
+        try {
+            XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
+
+            UpdateRequest updateRequest = new UpdateRequest();
+            updateRequest.index(ElasticKey.storeIndex);
+            updateRequest.id(id);
+            updateRequest.doc(jsonBuilder
+                    .startObject()
+                    .field(field, value)
+                    .endObject());
+            client.update(updateRequest, RequestOptions.DEFAULT);
+        } catch (ElasticsearchException e) {
+            e.getDetailedMessage();
+        } catch (Exception ex) {
+            ex.getLocalizedMessage();
+        }
+
+    }
+
 
 
 }

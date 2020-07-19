@@ -37,8 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//	.antMatchers("/authenticate/register-device").permitAll()
 		.antMatchers("/admin/**").permitAll()
 		.antMatchers("/category/**").permitAll()
+		.antMatchers("/store/all-store/**").permitAll()
 		.antMatchers("/authenticate/image-profile/**").permitAll()
-		.antMatchers("/store/**").permitAll()
 		.anyRequest()
 		.authenticated()
 		.and()
@@ -73,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/public")
         .and()
         .ignoring()
-        .antMatchers("/h2-console/**/**");;
+        .antMatchers("/h2-console/**/**");
   }
 
   @Bean

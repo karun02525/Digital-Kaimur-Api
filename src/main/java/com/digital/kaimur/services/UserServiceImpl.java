@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.digital.kaimur.utils.ElasticQueryStore;
 import com.digital.kaimur.utils.RedisKey;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -70,6 +71,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private ElasticQueryStore elasticStoreQuery;
 
 
     private final Path profilePath = StorageProperties.getInstance().getProfilePath();
@@ -258,6 +262,7 @@ public class UserServiceImpl implements UserService {
                 mongoTemplate.upsert(query, update, User.class);
                 Map<String, String> map = new HashMap<>();
                 map.put("user_avatar", avatarUser);
+                elasticStoreQuery.updateProfileImageElastic(uid.trim(), "user_avatar", avatarUser);
                 return new ResponseEntity<>(new ResponseObjectModel(true, "Your profile image has been updated successfully", map), HttpStatus.OK);
             } catch (Exception e) {
                 throw new CustomException("Failed to update empty file");

@@ -53,10 +53,10 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public ResponseEntity<?> saveStore(MultipartFile[] files, StoreModel storeModel) {
+    public ResponseEntity<?> saveStore(MultipartFile[] imgarray, StoreModel storeModel) {
         String uid = SecurityContextHolder.getContext().getAuthentication().getName();
         List<String> fileNames = new ArrayList<>();
-        Arrays.stream(files).forEach(file -> {
+        Arrays.stream(imgarray).forEach(file -> {
             String storeName = "store_" + UUID.randomUUID() + ".png";
             try {
                 Files.copy(file.getInputStream(),this.storePath.resolve(storeName), StandardCopyOption.REPLACE_EXISTING);
@@ -97,6 +97,10 @@ public class StoreServiceImpl implements StoreService {
         s.setOwner_email(sm.getOwner_email());
         s.setOwner_mobile(sm.getOwner_mobile());
         s.setImgarray(sm.getImgarray());
+
+        log.info("************************************************");
+        log.info(s.toString());
+        log.info("************************************************");
 
         elasticStoreQuery.createStoreElastic(s);
                  return new ResponseEntity<>(new ResponseObjectModel(true, "Your Register", s), HttpStatus.OK);

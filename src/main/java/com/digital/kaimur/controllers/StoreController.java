@@ -29,15 +29,15 @@ public class StoreController {
 
 
     @PostMapping("/create-store")
-    public ResponseEntity<?> saveStore(@RequestParam("images") MultipartFile[] files,
+    public ResponseEntity<?> saveStore(@RequestParam("imgarray") MultipartFile[] imgarray,
                                        @RequestParam("cid") String cid,
                                        @RequestParam("vid") String vid,
                                        @RequestParam("sname") String sname,
                                        @RequestParam("semail") String semail,
                                        @RequestParam("smobile") String smobile,
                                        @RequestParam("color") String color,
-                                       @RequestParam("latitude") double latitude,
-                                       @RequestParam("longitude") double longitude,
+                                       @RequestParam("latitude") String latitude,
+                                       @RequestParam("longitude") String longitude,
                                        @RequestParam("address") String address,
                                        @RequestParam("nearby") String nearby,
                                        @RequestParam("pin_code") String pin_code,
@@ -45,38 +45,34 @@ public class StoreController {
                                        @RequestParam("owner_mobile") String owner_mobile,
                                        @RequestParam("owner_email") String owner_email) {
 
-        if (files[0].getSize()==0) {
+        if (imgarray[0].getSize()==0) {
             return new ResponseEntity<>(new ResponseModel(false, "file field is mandatory"), HttpStatus.EXPECTATION_FAILED);
-        } else if (cid.equals("")) {
+        } if (cid.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "cid field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (vid.equals("")) {
+        }else if (vid.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "vid field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (sname.equals("")) {
+        }else if (sname.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "store name field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (smobile.equals("")) {
+        }else if (smobile.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "store mobile field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (semail.equals("")) {
+        }else if (semail.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "store email field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (color.equals("")) {
+        }else if (color.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "color field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (latitude==0.0) {
-            return new ResponseEntity<>(new ResponseModel(false, "latitude field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (longitude==0.0) {
-            return new ResponseEntity<>(new ResponseModel(false, "longitude field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (address.equals("")) {
+        }else if (address.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "address field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (nearby.equals("")) {
+        }else if (nearby.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "nearby field is mandatory"), HttpStatus.BAD_REQUEST);
-        }else if (pin_code.equals("")) {
+        }else if (pin_code.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "pin code field is mandatory"), HttpStatus.BAD_REQUEST);
-        } else if (owner_name.equals("")) {
+        } else if (owner_name.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "owner name field is mandatory"), HttpStatus.BAD_REQUEST);
-        } else if (owner_mobile.equals("")) {
+        } else if (owner_mobile.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "owner mobile field is mandatory"), HttpStatus.BAD_REQUEST);
-        } else if (owner_email.equals("")) {
+        } else if (owner_email.isEmpty()) {
             return new ResponseEntity<>(new ResponseModel(false, "owner email field is mandatory"), HttpStatus.BAD_REQUEST);
         } else {
-            return storeService.saveStore(files,new StoreModel(cid,vid,sname,semail,smobile,color,latitude,longitude,address,nearby,pin_code,owner_name,owner_mobile,owner_email));
+            return storeService.saveStore(imgarray,new StoreModel(cid,vid,sname,semail,smobile,color,Double.parseDouble(latitude),Double.parseDouble(longitude),address,nearby,pin_code,owner_name,owner_mobile,owner_email));
         }
     }
 
